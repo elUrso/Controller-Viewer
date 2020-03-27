@@ -18,6 +18,7 @@ Node.i = {}
 
 Node.i.addChild = function(self, node)
 	table.insert(self.children, node)
+	node.weak.parent = self
 end
 
 Node.i.draw = function(self)
@@ -29,11 +30,23 @@ end
 
 Node.i.innerDraw = function(self) end
 
+Node.i.origin = function(self)
+	if self.weak.parent then
+		return self.weak.parent.x or 0, self.weak.parent.y or 0
+	end
+	return 0, 0
+end
+
+Node.i.position = function(self)
+	local x, y = self:origin()
+	return x + self.x, y + self.y
+end
+
 Node.new = function()
 	node = {}
 	setmetatable(node, Node.imt)
 	node.children = {}
-
+	node.weak = Weak()
 	return node
 end
 
